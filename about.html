@@ -1,0 +1,170 @@
+<!-- NAVIGATION -->
+<header class="site-header">
+  <div class="nav-container">
+    
+    <!-- 로고 -->
+    <a href="index.html" class="logo">
+      <span class="logo-dot"></span>
+      Quiet Archive
+    </a>
+
+    <!-- 데스크탑 메뉴 -->
+    <nav class="nav-menu" id="navMenu">
+      <a href="about.html" class="nav-link active">About Me</a>
+      <a href="movies-games.html" class="nav-link">영화&게임</a>
+      <a href="share.html" class="nav-link">취향 나누기</a>
+    </nav>
+
+    <!-- 모바일 햄버거 -->
+    <button class="menu-toggle" id="menuToggle" aria-label="메뉴 열기">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+  </div>
+</header>
+
+<style>
+:root{
+  --bg:#F8F6F2;
+  --card:#FFFCF7;
+  --text:#2E2E2E;
+  --sub:#6B6B6B;
+  --point:#7A8B5A;
+  --border:#E8E3DA;
+}
+
+.site-header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  backdrop-filter:blur(12px);
+  background:rgba(248,246,242,0.85);
+  border-bottom:1px solid var(--border);
+}
+
+.nav-container{
+  max-width:1100px;
+  margin:0 auto;
+  height:70px;
+  padding:0 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  text-decoration:none;
+  color:var(--text);
+  font-weight:700;
+  font-size:1rem;
+}
+
+.logo-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--point);
+}
+
+.nav-menu{
+  display:flex;
+  gap:32px;
+}
+
+.nav-link{
+  position:relative;
+  text-decoration:none;
+  color:var(--sub);
+  font-size:0.95rem;
+  font-weight:500;
+  transition:.25s;
+}
+
+.nav-link:hover{
+  color:var(--point);
+}
+
+/* 현재 페이지 */
+.nav-link.active{
+  color:var(--point);
+}
+
+.nav-link.active::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-8px;
+  width:100%;
+  height:2px;
+  background:var(--point);
+  border-radius:999px;
+}
+
+/* 햄버거 버튼 */
+.menu-toggle{
+  display:none;
+  flex-direction:column;
+  gap:5px;
+  background:none;
+  border:none;
+  cursor:pointer;
+}
+
+.menu-toggle span{
+  width:24px;
+  height:2px;
+  background:var(--text);
+  transition:.3s;
+}
+
+/* 모바일 */
+@media (max-width:768px){
+
+  .menu-toggle{
+    display:flex;
+  }
+
+  .nav-menu{
+    position:absolute;
+    top:70px;
+    left:0;
+    right:0;
+    background:var(--card);
+    border-bottom:1px solid var(--border);
+
+    flex-direction:column;
+    gap:0;
+
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .3s ease;
+  }
+
+  .nav-menu.open{
+    max-height:300px;
+  }
+
+  .nav-link{
+    padding:18px 24px;
+    border-top:1px solid var(--border);
+  }
+
+  .nav-link.active::after{
+    display:none;
+  }
+}
+</style>
+
+<script>
+const menuToggle = document.getElementById("menuToggle");
+const navMenu = document.getElementById("navMenu");
+
+menuToggle.addEventListener("click", () => {
+  navMenu.classList.toggle("open");
+});
+</script>
