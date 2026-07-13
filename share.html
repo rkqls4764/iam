@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>취향 나누기 - Quiet Archive</title>
+    <!-- Pretendard 폰트 로드 -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons (미니멀 아이콘 패키지) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Tone.js (음악 효과) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: {
+                            bg: '#F8F6F2',      /* 아이보리 배경 */
+                            card: '#FFFCF7',    /* 크림 화이트 카드 */
+                            main: '#2E2E2E',    /* 메인 텍스트 */
+                            sub: '#6B6B6B',     /* 서브 텍스트 */
+                            point: '#7A8B5A',   /* 올리브 그린 포인트 */
+                            hover: '#5F6F47',   /* 포인트 호버 */
+                            border: '#E8E3DA'   /* 구분선 */
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(122, 139, 90, 0.05)',
+                        'soft-lg': '0 10px 30px -5px rgba(122, 139, 90, 0.08)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Pretendard', sans-serif;
+            /* 세이지 그린 계열의 부드럽고 따뜻한 그라데이션 고정 배경 */
+            background: linear-gradient(135deg, #F8F6F2 0%, #EFF2EA 50%, #E2E8D9 100%);
+            background-attachment: fixed;
+            color: #2E2E2E;
+            overflow-x: hidden;
+        }
+        
+        /* 스크롤바 디자인 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F8F6F2;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #E8E3DA;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7A8B5A;
+        }
+
+        /* 스크롤 인터랙션용 애니메이션 */
+        .fade-in-element {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .fade-in-element.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="selection:bg-cream-point/20 selection:text-cream-point min-h-screen flex flex-col justify-between">
+
+    <!-- NAVIGATION -->
+    <header class="site-header">
+      <div class="nav-container">
+        
+        <!-- 로고 -->
+        <a href="index.html" class="logo">
+          <span class="logo-dot"></span>
+          Quiet Archive
+        </a>
+
+        <!-- 데스크탑 메뉴 -->
+        <nav class="nav-menu" id="navMenu">
+          <a href="about.html" class="nav-link">About Me</a>
+          <a href="artwork.html" class="nav-link">영화&게임</a>
+          <a href="share.html" class="nav-link active">취향 나누기</a>
+        </nav>
+
+        <!-- 모바일 햄버거 -->
+        <button class="menu-toggle" id="menuToggle" aria-label="메뉴 열기">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+      </div>
+    </header>
+
+    <style>
+    :root{
+      --bg:#F8F6F2;
+      --card:#FFFCF7;
+      --text:#2E2E2E;
+      --sub:#6B6B6B;
+      --point:#7A8B5A;
+      --border:#E8E3DA;
+    }
+
+    .site-header{
+      position:sticky;
+      top:0;
+      z-index:1000;
+      backdrop-filter:blur(12px);
+      background:rgba(248,246,242,0.85);
+      border-bottom:1px solid var(--border);
+    }
+
+    .nav-container{
+      max-width:1100px;
+      margin:0 auto;
+      height:70px;
+      padding:0 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .logo{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      text-decoration:none;
+      color:var(--text);
+      font-weight:700;
+      font-size:1rem;
+    }
+
+    .logo-dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:var(--point);
+    }
+
+    .nav-menu{
+      display:flex;
+      gap:32px;
+    }
+
+    .nav-link{
+      position:relative;
+      text-decoration:none;
+      color:var(--sub);
+      font-size:0.95rem;
+      font-weight:500;
+      transition:.25s;
+    }
+
+    .nav-link:hover{
+      color:var(--point);
+    }
+
+    /* 현재 페이지 */
+    .nav-link.active{
+      color:var(--point);
+    }
+
+    .nav-link.active::after{
+      content:"";
+      position:absolute;
+      left:0;
+      bottom:-8px;
+      width:100%;
+      height:2px;
+      background:var(--point);
+      border-radius:999px;
+    }
+
+    /* 햄버거 버튼 */
+    .menu-toggle{
+      display:none;
+      flex-direction:column;
+      gap:5px;
+      background:none;
+      border:none;
+      cursor:pointer;
+    }
+
+    .menu-toggle span{
+      width:24px;
+      height:2px;
+      background:var(--text);
+      transition:.3s;
+    }
+
+    /* 모바일 */
+    @media (max-width:768px){
+
+      .menu-toggle{
+        display:flex;
+      }
+
+      .nav-menu{
+        position:absolute;
+        top:70px;
+        left:0;
+        right:0;
+        background:var(--card);
+        border-bottom:1px solid var(--border);
+
+        flex-direction:column;
+        gap:0;
+
+        max-height:0;
+        overflow:hidden;
+        transition:max-height .3s ease;
+      }
+
+      .nav-menu.open{
+        max-height:300px;
+      }
+
+      .nav-link{
+        padding:18px 24px;
+        border-top:1px solid var(--border);
+      }
+
+      .nav-link.active::after{
+        display:none;
+      }
+    }
+    </style>
+
+    <script>
+    const menuToggle = document.getElementById("menuToggle");
+    const navMenu = document.getElementById("navMenu");
+
+    menuToggle.addEventListener("click", () => {
+      navMenu.classList.toggle("open");
+    });
+    </script>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow">
+        
+        <!-- Header Hero Intro -->
+        <section class="max-w-4xl mx-auto px-6 pt-16 pb-8 text-center">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cream-card/60 border border-cream-border shadow-sm mb-4 fade-in-element">
+                <span class="w-2 h-2 rounded-full bg-cream-point"></span>
+                <span class="text-xs text-cream-sub font-medium tracking-wider uppercase">Taste Share & Test</span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-bold text-cream-main tracking-tight leading-tight mb-4 fade-in-element" style="transition-delay: 100ms;">
+                너와 나의 우주가 교차하는 순간
+            </h1>
+            <p class="text-cream-sub text-sm max-w-lg mx-auto leading-relaxed fade-in-element" style="transition-delay: 150ms;">
+                우리가 사랑하는 영화, 밤새 빠져들었던 게임들의 기억들.<br class="hidden sm:block">
+                가빈님과의 취향 유사도를 측정해보고 당신의 소중한 취향을 카드로 남겨보세요.
+            </p>
+        </section>
+
+        <!-- Taste Similarity Test Section -->
+        <section id="test" class="py-12 px-6 bg-transparent">
+            <div class="max-w-xl mx-auto">
+                <div class="text-center mb-10 fade-in-element">
+                    <span class="text-cream-point font-medium text-xs tracking-wider uppercase">Match Test</span>
+                    <h2 class="text-2xl font-bold text-cream-main mt-1">김가빈과의 취향 싱크로율</h2>
+                </div>
+
+                <!-- 테스트 카드 컨테이너 -->
+                <div class="bg-cream-card border border-cream-border p-8 rounded-2xl shadow-soft fade-in-element">
+                    
+                    <!-- 1) 시작 화면 -->
+                    <div id="test-intro-screen" class="space-y-6 text-center">
+                        <div class="w-14 h-14 rounded-full bg-cream-point/10 text-cream-point flex items-center justify-center mx-auto">
+                            <i data-lucide="sparkles" class="w-7 h-7"></i>
+                        </div>
+                        <div class="space-y-2">
+                            <h3 class="text-lg font-bold text-cream-main">취향 매칭도 테스트</h3>
+                            <p class="text-cream-sub text-xs leading-relaxed max-w-xs mx-auto">
+                                우주 SF의 깊은 경외감부터, 조용히 빗소리 속에서 채우는 농장 힐링의 순간까지! 5가지 감성적인 가빈님의 인생 취향과 일치율을 진단합니다.
+                            </p>
+                        </div>
+                        <button onclick="startTest()" class="px-6 py-2.5 bg-cream-point hover:bg-cream-hover text-cream-card text-xs font-semibold rounded-xl transition-all shadow-md inline-flex items-center gap-2 active:scale-95">
+                            테스트 시작하기
+                            <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+
+                    <!-- 2) 퀴즈 진행 화면 -->
+                    <div id="test-quiz-screen" class="hidden space-y-6">
+                        <!-- 상단 정보 및 진행 바 -->
+                        <div class="flex items-center justify-between text-xs font-semibold text-cream-sub">
+                            <span id="test-progress-text">질문 1 / 5</span>
+                            <span id="test-percentage-text" class="text-cream-point">20%</span>
+                        </div>
+                        <div class="w-full bg-cream-bg h-2 rounded-full overflow-hidden border border-cream-border">
+                            <div id="test-progress-bar" class="bg-cream-point h-full transition-all duration-300" style="width: 20%;"></div>
+                        </div>
+
+                        <!-- 질문 텍스트 -->
+                        <h3 id="test-question-title" class="text-base font-bold text-cream-main leading-snug">질문이 여기에 렌더링됩니다.</h3>
+
+                        <!-- 선택지 버튼 그룹 (4개) -->
+                        <div class="grid grid-cols-1 gap-3" id="test-options-container">
+                            <!-- JS로 렌더링 -->
+                        </div>
+                    </div>
+
+                    <!-- 3) 결과 화면 -->
+                    <div id="test-result-screen" class="hidden text-center space-y-6">
+                        <div class="relative w-28 h-28 mx-auto flex items-center justify-center">
+                            <svg class="w-full h-full transform -rotate-90">
+                                <circle cx="56" cy="56" r="44" stroke="#E8E3DA" stroke-width="7" fill="transparent"></circle>
+                                <circle id="result-circle-progress" cx="56" cy="56" r="44" stroke="#7A8B5A" stroke-width="7" fill="transparent" stroke-dasharray="276" stroke-dashoffset="276" class="transition-all duration-1000 ease-out"></circle>
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                <span id="result-score-text" class="text-2xl font-extrabold text-cream-main">0%</span>
+                                <span class="text-[9px] text-cream-sub font-bold tracking-widest uppercase">Match</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <h4 id="result-verdict-title" class="text-lg font-bold text-cream-main">영혼의 메이트를 발견했어요!</h4>
+                            <p id="result-verdict-desc" class="text-cream-sub text-xs leading-relaxed max-w-sm mx-auto">가빈님과 취향이 거의 똑같은 소중한 동반자이시군요. 아래 수집함에 방명록 카드를 남겨 더 친해져보세요.</p>
+                        </div>
+
+                        <div class="pt-4 border-t border-cream-border flex justify-center gap-2">
+                            <button onclick="resetTest()" class="px-4 py-2 rounded-xl border border-cream-border hover:border-cream-point text-cream-sub hover:text-cream-point text-xs font-semibold transition-all">
+                                다시 하기
+                            </button>
+                            <a href="#guestbook" class="px-4 py-2 rounded-xl bg-cream-point hover:bg-cream-hover text-cream-card text-xs font-semibold transition-all shadow active:scale-95">
+                                취향 카드 작성하러 가기
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA / Guestbook Section -->
+        <section id="guestbook" class="py-16 px-6 bg-transparent">
+            <div class="max-w-5xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-12">
+                    
+                    <!-- 왼쪽 가이드 컬럼 -->
+                    <div class="md:col-span-5 flex flex-col justify-between fade-in-element">
+                        <div class="space-y-4">
+                            <span class="text-cream-point font-medium text-xs tracking-wider uppercase">Connect</span>
+                            <h2 class="text-2xl font-bold text-cream-main leading-snug">가장 편안한 아날로그 쉼표를<br>여기에 남겨두세요.</h2>
+                            <p class="text-cream-sub text-xs leading-relaxed">
+                                같은 우주적 비밀에 감탄했거나, 펠리컨 마을 빗소리 브금에 녹아들었던 적이 있으신가요? 조용하지만 반짝였던 당신만의 인생 작품과 따스한 감상을 카드 조각으로 기록해 주세요.
+                            </p>
+                        </div>
+
+                        <div class="pt-8 border-t border-cream-border mt-8 md:mt-0 text-[11px] text-cream-sub space-y-2">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="mail" class="w-3.5 h-3.5 text-cream-point"></i>
+                                <span>rkql4764@naver.com</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="instagram" class="w-3.5 h-3.5 text-cream-point"></i>
+                                <span>@quiet.room.sf</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 오른쪽 폼 & 카드 리스트업 컬럼 -->
+                    <div class="md:col-span-7 space-y-6 fade-in-element" style="transition-delay: 150ms;">
+                        <form id="tasteForm" class="bg-cream-card p-6 rounded-2xl border border-cream-border shadow-soft space-y-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-cream-main mb-1.5 uppercase tracking-wide">누구이신가요?</label>
+                                <input type="text" id="visitorName" required placeholder="이름이나 닉네임을 적어주세요." class="w-full px-4 py-2 rounded-xl border border-cream-border bg-cream-bg focus:border-cream-point focus:outline-none text-xs transition-all">
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-cream-main mb-1.5 uppercase tracking-wide">인생 영화가 있다면?</label>
+                                    <input type="text" id="visitorMovie" placeholder="예: 인터스텔라" class="w-full px-4 py-2 rounded-xl border border-cream-border bg-cream-bg focus:border-cream-point focus:outline-none text-xs transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-cream-main mb-1.5 uppercase tracking-wide">인생 게임이 있다면?</label>
+                                    <input type="text" id="visitorGame" placeholder="예: 스타듀밸리" class="w-full px-4 py-2 rounded-xl border border-cream-border bg-cream-bg focus:border-cream-point focus:outline-none text-xs transition-all">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-bold text-cream-main mb-1.5 uppercase tracking-wide">남기고픈 이야기</label>
+                                <textarea id="visitorMessage" rows="3" required placeholder="조용하고 편안한 이야기를 나누어주세요." class="w-full px-4 py-2 rounded-xl border border-cream-border bg-cream-bg focus:border-cream-point focus:outline-none text-xs transition-all resize-none"></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full py-2.5 bg-cream-point hover:bg-cream-hover text-cream-card text-xs font-semibold rounded-xl transition-all duration-300 shadow-md flex items-center justify-center gap-2 active:scale-98">
+                                <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                                나의 취향 카드 등록하기
+                            </button>
+                        </form>
+
+                        <!-- 수집 리스트업 공간 -->
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between text-[10px] font-bold text-cream-main uppercase tracking-wider px-1">
+                                <span>최근 수집된 취향 조각들</span>
+                                <span id="cardCount" class="text-cream-point">0개</span>
+                            </div>
+                            
+                            <div id="cardContainer" class="space-y-3 max-h-[280px] overflow-y-auto pr-1">
+                                <!-- JS를 통해 카드 렌더링 -->
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Floating Cozy Audio Player -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <button id="ambientBtn" class="flex items-center gap-2 text-xs bg-cream-card border border-cream-border hover:border-cream-point/50 text-cream-sub px-4 py-2.5 rounded-full transition-all shadow-md active:scale-95">
+            <span id="ambientWave" class="relative flex h-2 w-2 hidden">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cream-point opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-cream-point"></span>
+            </span>
+            <i data-lucide="music" class="w-3.5 h-3.5"></i>
+            <span id="ambientText">음악 켜기</span>
+        </button>
+    </div>
+
+    <!-- Toast Alert 알림창 -->
+    <div id="toastAlert" class="fixed bottom-6 left-6 z-50 bg-cream-card border border-cream-point text-cream-main px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-500 pointer-events-none">
+        <div class="w-6 h-6 rounded-full bg-cream-point/10 flex items-center justify-center text-cream-point">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+        </div>
+        <div class="text-xs">
+            <p id="toastMessage" class="font-bold">성공적으로 등록되었습니다!</p>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="py-12 px-6 border-t border-cream-border bg-cream-card/30 mt-16">
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-cream-point"></span>
+                <span class="text-sm font-semibold text-cream-main tracking-tight">Quiet Archive</span>
+            </div>
+            
+            <p class="text-xs text-cream-sub text-center md:text-left leading-relaxed">
+                © 2026 Quiet Archive. All rights reserved.<br class="block sm:hidden">
+                누워서 가장 멀리 가는 취미에 함께해주셔서 고맙습니다.
+            </p>
+
+            <div class="flex gap-4">
+                <a href="#" class="w-8 h-8 rounded-full border border-cream-border hover:border-cream-point/50 flex items-center justify-center text-cream-sub hover:text-cream-point transition-colors">
+                    <i data-lucide="github" class="w-4 h-4"></i>
+                </a>
+                <a href="#" class="w-8 h-8 rounded-full border border-cream-border hover:border-cream-point/50 flex items-center justify-center text-cream-sub hover:text-cream-point transition-colors">
+                    <i data-lucide="arrow-up" class="w-4 h-4"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        /* 1. Lucide 아이콘 초기화 */
+        lucide.createIcons();
+
+        /* 2. 스크롤 페이드인 인터랙션 (Intersection Observer) */
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = document.querySelectorAll('.fade-in-element');
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            elements.forEach(el => observer.observe(el));
+            
+            // 방명록 로드
+            loadTastes();
+        });
+
+        /* 3. Tone.js 기반 앰비언트 사운드 재생 */
+        let synth = null;
+        let ambientLoop = null;
+        let isPlaying = false;
+
+        const ambientBtn = document.getElementById('ambientBtn');
+        const ambientText = document.getElementById('ambientText');
+        const ambientWave = document.getElementById('ambientWave');
+
+        ambientBtn.addEventListener('click', async () => {
+            if (!isPlaying) {
+                try {
+                    await Tone.start();
+                    
+                    synth = new Tone.PolySynth(Tone.Synth, {
+                        oscillator: { type: 'sine' },
+                        envelope: { attack: 2, decay: 1, sustain: 1, release: 3 }
+                    }).toDestination();
+                    
+                    synth.volume.value = -18;
+
+                    const chords = [
+                        ["C4", "E4", "G4", "B4"],
+                        ["F4", "A4", "C5", "E5"],
+                        ["G4", "B4", "D5", "F#5"],
+                        ["E4", "G4", "B4", "D5"]
+                    ];
+                    
+                    let step = 0;
+                    ambientLoop = new Tone.Loop(time => {
+                        const chord = chords[step % chords.length];
+                        synth.triggerAttackRelease(chord, "4n", time);
+                        step++;
+                    }, "6n").start(0);
+
+                    Tone.Transport.start();
+                    
+                    isPlaying = true;
+                    ambientText.innerText = "음악 끄기";
+                    ambientWave.classList.remove('hidden');
+                    showToast("차분한 우주 앰비언트 음악이 시작되었습니다.");
+                } catch (e) {
+                    showToast("오디오 초기화 오류가 발생했습니다.");
+                }
+            } else {
+                Tone.Transport.stop();
+                if (ambientLoop) ambientLoop.cancel();
+                if (synth) synth.releaseAll();
+                isPlaying = false;
+                ambientText.innerText = "음악 켜기";
+                ambientWave.classList.add('hidden');
+                showToast("음악이 일시정지되었습니다.");
+            }
+        });
+
+        /* 3-1. 응답시 기분좋은 사운드 연동 */
+        function playCozyTone() {
+            try {
+                if (typeof Tone !== 'undefined' && Tone.getContext().state === 'running') {
+                    const cozySynth = new Tone.MonoSynth({
+                        oscillator: { type: "sine" },
+                        envelope: { attack: 0.01, decay: 0.1, sustain: 0.1, release: 0.2 }
+                    }).toDestination();
+                    cozySynth.volume.value = -12;
+                    cozySynth.triggerAttackRelease("E5", "16n");
+                }
+            } catch (e) {
+                // 오디오 장치 준비 안됨 처리 우회
+            }
+        }
+
+        /* 4. 로컬스토리지를 활용한 방명록(취향함) 기능 */
+        const tasteForm = document.getElementById('tasteForm');
+        
+        tasteForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('visitorName').value.trim();
+            const movie = document.getElementById('visitorMovie').value.trim() || '없음';
+            const game = document.getElementById('visitorGame').value.trim() || '없음';
+            const message = document.getElementById('visitorMessage').value.trim();
+
+            const newTaste = {
+                id: Date.now(),
+                name,
+                movie,
+                game,
+                message,
+                date: new Date().toLocaleDateString('ko-KR')
+            };
+
+            let savedTastes = JSON.parse(localStorage.getItem('my_tastes')) || [];
+            savedTastes.unshift(newTaste);
+            localStorage.setItem('my_tastes', JSON.stringify(savedTastes));
+
+            tasteForm.reset();
+            loadTastes();
+            showToast("소중한 취향 카드가 성공적으로 보관되었습니다.");
+        });
+
+        function loadTastes() {
+            const container = document.getElementById('cardContainer');
+            const cardCount = document.getElementById('cardCount');
+            
+            const sampleTastes = [
+                {
+                    id: 1,
+                    name: "은하철도 999",
+                    movie: "헤일메리 프로젝트",
+                    game: "메챠 카멜레온",
+                    message: "올리브 그린 감성의 아늑한 방이 연상되는 페이지네요. 헤일메리 프로젝트 소설 진짜 밤새 읽었는데, 취향이 통하는 분을 찾아서 너무 신나요!",
+                    date: "2026. 7. 10."
+                },
+                {
+                    id: 2,
+                    name: "비오는날 소파",
+                    movie: "곡성",
+                    game: "스타듀 밸리",
+                    message: "정말 포근한 색감이에요. 곡성은 제 인생 최애 스릴러 영화인데 여기서 보니 반갑네요! 스타듀밸리 빗소리 들으면서 구경하고 가요.",
+                    date: "2026. 7. 9."
+                }
+            ];
+
+            let savedTastes = JSON.parse(localStorage.getItem('my_tastes'));
+            if (!savedTastes || savedTastes.length === 0) {
+                savedTastes = sampleTastes;
+                localStorage.setItem('my_tastes', JSON.stringify(savedTastes));
+            }
+
+            cardCount.innerText = `${savedTastes.length}개`;
+            container.innerHTML = '';
+
+            savedTastes.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-cream-card border border-cream-border p-4 rounded-xl shadow-sm text-xs space-y-2 hover:border-cream-point transition-colors relative group";
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-center mb-1 pr-6">
+                        <span class="font-bold text-cream-main flex items-center gap-1 truncate mr-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-cream-point shrink-0"></span>
+                            ${escapeHtml(item.name)} 님의 취향 조각
+                        </span>
+                        <span class="text-[10px] text-cream-sub shrink-0">${item.date}</span>
+                    </div>
+                    <p class="text-cream-sub leading-relaxed italic">"${escapeHtml(item.message)}"</p>
+                    <div class="flex gap-2 text-[10px] text-cream-point pt-1 border-t border-cream-border/50">
+                        <span class="bg-cream-bg px-2 py-0.5 rounded border border-cream-border">🎬 ${escapeHtml(item.movie)}</span>
+                        <span class="bg-cream-bg px-2 py-0.5 rounded border border-cream-border">🎮 ${escapeHtml(item.game)}</span>
+                    </div>
+                    <button onclick="deleteTaste(${item.id})" class="absolute right-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity text-cream-sub hover:text-red-500" title="삭제">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function deleteTaste(id) {
+            let savedTastes = JSON.parse(localStorage.getItem('my_tastes')) || [];
+            savedTastes = savedTastes.filter(item => item.id !== id);
+            localStorage.setItem('my_tastes', JSON.stringify(savedTastes));
+            loadTastes();
+            showToast("취향 카드가 삭제되었습니다.");
+        }
+
+        /* 5. 모던 토스트 팝업 제어 */
+        function showToast(msg) {
+            const toast = document.getElementById('toastAlert');
+            const toastMsg = document.getElementById('toastMessage');
+            
+            toastMsg.innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-20', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-20', 'pointer-events-none');
+            }, 3000);
+        }
+
+        /* HTML 이스케이프 유틸리티 (XSS 방지) */
+        function escapeHtml(string) {
+            return String(string).replace(/[&<>"']/g, function (s) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                }[s];
+            });
+        }
+
+        /* 6. 취향 싱크로율 테스트 비즈니스 로직 */
+        const quizData = [
+            {
+                question: "1. 비오는 날 가장 행복하게 선호하는 휴식 장소는?",
+                options: [
+                    "따뜻한 이불 속에서 빔프로젝터로 영화 보기",
+                    "조용한 창가 자리 북카페에서 책 한 권 읽기",
+                    "빗소리 감상하며 촉촉한 숲속 드라이브 가기",
+                    "친구들과 단골 전집에 모여 유쾌하게 이야기 나누기"
+                ],
+                correctAnswerIndex: 0 // 가빈의 정답: 이불 속 빔프로젝터
+            },
+            {
+                question: "2. 우주선에 탑승할 때 단 하나의 놀거리만 챙길 수 있다면?",
+                options: [
+                    "끝없이 평화롭게 플레이할 수 있는 시농업 힐링 게임기",
+                    "우주 배경의 장대하고 치밀한 고전 하드 SF 명작 소설집",
+                    "가까운 사람들이 담긴 그리운 추억의 앨범북",
+                    "모든 외로움을 달래주고 잡학을 전수하는 지능형 AI 로봇"
+                ],
+                correctAnswerIndex: 0 // 가빈의 정답: 힐링 시뮬레이션 게임기
+            },
+            {
+                question: "3. 내 마음에 극도로 깊은 흔적을 남기는 미디어 장르는?",
+                options: [
+                    "눈물과 따스함이 가득 찬 휴머니즘 다큐멘터리",
+                    "우주의 기묘함에 매료되는 우주 SF / 실존 미스터리",
+                    "가볍고 경쾌하여 머리를 비우게 돕는 하이틴 로코",
+                    "심장이 뻥 뚫리는 도심 질주 타격형 액션 무비"
+                ],
+                correctAnswerIndex: 1 // 가빈의 정답: SF / 미스터리
+            },
+            {
+                question: "4. 휴일 아침, 기분 좋게 잠에서 깼을 때 세우고 싶은 최상의 계획은?",
+                options: [
+                    "알람은 모두 OFF! 밤낮 걱정 없이 해가 뜰 때까지 늦잠자기",
+                    "아침 일찍 러닝화 끈을 동여매고 신선한 공기 쐬러 가기",
+                    "유튜브에서 본 초인기 신상 맛집 오프런 준비하기",
+                    "완벽히 밀린 이불 먼지를 털어내고 아늑하게 대청소하기"
+                ],
+                correctAnswerIndex: 0 // 가빈의 정답: 늦잠
+            },
+            {
+                question: "5. 친구들이 나를 바라보고 묘사할 때 가장 잘 들어맞는 이미지는?",
+                options: [
+                    "어딜 가든 에너지가 넘치고 분위기를 주도하는 리더",
+                    "조용하고 잔잔하지만 저만의 가치관과 취향이 단단한 사람",
+                    "한치의 오차도 용납하지 않는 칼 같은 완벽주의 플래너",
+                    "늘 새로운 자극을 향해 가방을 싸는 자유로운 영혼"
+                ],
+                correctAnswerIndex: 1 // 가빈의 정답: 조용하고 단단한 취향
+            }
+        ];
+
+        let currentQuizIndex = 0;
+        let userQuizAnswers = [];
+
+        function startTest() {
+            document.getElementById('test-intro-screen').classList.add('hidden');
+            document.getElementById('test-quiz-screen').classList.remove('hidden');
+            currentQuizIndex = 0;
+            userQuizAnswers = [];
+            showQuizQuestion();
+        }
+
+        function showQuizQuestion() {
+            const currentQuestion = quizData[currentQuizIndex];
+            
+            // 진행도 텍스트 및 바 업데이트
+            document.getElementById('test-progress-text').innerText = `질문 ${currentQuizIndex + 1} / 5`;
+            const percent = ((currentQuizIndex + 1) / 5) * 100;
+            document.getElementById('test-percentage-text').innerText = `${percent}%`;
+            document.getElementById('test-progress-bar').style.width = `${percent}%`;
+            
+            // 질문 렌더링
+            document.getElementById('test-question-title').innerText = currentQuestion.question;
+            
+            // 선택지 렌더링
+            const optionsContainer = document.getElementById('test-options-container');
+            optionsContainer.innerHTML = '';
+            
+            currentQuestion.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left px-5 py-4 rounded-xl border border-cream-border bg-cream-card hover:bg-cream-bg hover:border-cream-point text-cream-main text-xs font-medium transition-all duration-200 flex justify-between items-center group active:scale-[0.99]";
+                btn.onclick = () => selectOption(idx);
+                btn.innerHTML = `
+                    <span>${opt}</span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-cream-sub group-hover:text-cream-point transition-colors"></i>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+            
+            lucide.createIcons();
+        }
+
+        function selectOption(selectedIndex) {
+            userQuizAnswers.push(selectedIndex);
+            playCozyTone();
+
+            if (currentQuizIndex < 4) {
+                currentQuizIndex++;
+                const quizScreen = document.getElementById('test-quiz-screen');
+                quizScreen.style.opacity = '0.5';
+                setTimeout(() => {
+                    showQuizQuestion();
+                    quizScreen.style.opacity = '1';
+                }, 150);
+            } else {
+                calculateTestResult();
+            }
+        }
+
+        function calculateTestResult() {
+            document.getElementById('test-quiz-screen').classList.add('hidden');
+            document.getElementById('test-result-screen').classList.remove('hidden');
+
+            let correctCount = 0;
+            userQuizAnswers.forEach((ans, idx) => {
+                if (ans === quizData[idx].correctAnswerIndex) {
+                    correctCount++;
+                }
+            });
+
+            const score = (correctCount / 5) * 100;
+            
+            // 결과 값 텍스트 및 원형 게이지 업데이트
+            document.getElementById('result-score-text').innerText = `${score}%`;
+            
+            const circle = document.getElementById('result-circle-progress');
+            const circumference = 2 * Math.PI * 44; // 276.4
+            const offset = circumference - (score / 100) * circumference;
+            setTimeout(() => {
+                circle.style.strokeDashoffset = offset;
+            }, 100);
+
+            // 점수별 멘트 구성
+            let title = '';
+            let desc = '';
+
+            if (score === 100) {
+                title = "🪐 영혼의 우주 메이트";
+                desc = "취향 일치율 100%! 완벽한 영혼의 거울 쌍둥이를 발견했습니다. 당장 침대 혹은 소파에 누워 가빈님과 영화 정주행 각입니다!";
+            } else if (score >= 80) {
+                title = "🌿 마음이 닮은 단짝 메이트";
+                desc = "일상과 사색의 정서가 무척 통하는 동행자입니다. 조용한 방 안에서 스타듀밸리 멀티를 즐기기에 최상의 호흡입니다.";
+            } else if (score >= 60) {
+                title = "☕ 편안한 대화가 통하는 메이트";
+                desc = "아늑함과 세상을 바라보는 눈이 많이 닮으셨어요. 마주 앉아 가벼운 인생작 이야기를 나누면 금세 해가 질 거예요.";
+            } else if (score >= 40) {
+                title = "🌤️ 호기심 어린 취향 메이트";
+                desc = "서로 좋아하는 장르가 살짝 다르지만, 그래서 서로의 세상을 추천해 줄 때 가장 신선함을 느끼는 산뜻한 관계입니다.";
+            } else {
+                title = "🎨 새로운 매력 가득한 탐험 메이트";
+                desc = "정반대의 성향에 이끌리는 법칙! 가빈님의 아카이브를 찬찬히 구경하며 새로운 감성과 매력에 가볍게 스며들어 보세요.";
+            }
+
+            document.getElementById('result-verdict-title').innerText = title;
+            document.getElementById('result-verdict-desc').innerText = desc;
+        }
+
+        function resetTest() {
+            document.getElementById('test-result-screen').classList.add('hidden');
+            document.getElementById('test-intro-screen').classList.remove('hidden');
+            
+            const circle = document.getElementById('result-circle-progress');
+            circle.style.strokeDashoffset = '276';
+        }
+    </script>
+</body>
+</html>
