@@ -92,8 +92,8 @@
 
         <!-- 데스크탑 메뉴 -->
         <nav class="nav-menu" id="navMenu">
-          <a href="index.html" class="nav-link">About Me</a>
-          <a href="artwork.html" class="nav-link">영화&게임</a>
+          <a href="about.html" class="nav-link">About Me</a>
+          <a href="movies-games.html" class="nav-link">영화&게임</a>
           <a href="share.html" class="nav-link active">취향 나누기</a>
         </nav>
 
@@ -378,26 +378,30 @@
 
                     <!-- 오른쪽 폼 & 카드 리스트업 컬럼 -->
                     <div class="md:col-span-7 space-y-6 fade-in-element" style="transition-delay: 150ms;">
-                        <form id="tasteForm" class="bg-cream-card p-6 rounded-2xl border border-cream-border shadow-soft space-y-4">
+                        <!-- Netlify Forms 연동 설정이 완료된 폼 태그 -->
+                        <form id="tasteForm" name="taste-share" data-netlify="true" class="bg-cream-card p-6 rounded-2xl border border-cream-border shadow-soft space-y-4">
+                            <!-- Netlify Form에 폼 이름을 알리는 가상 필드 -->
+                            <input type="hidden" name="form-name" value="taste-share" />
+
                             <div>
                                 <label class="block text-[10px] font-bold text-cream-main mb-1.5 uppercase tracking-wide">누구이신가요?</label>
-                                <input type="text" id="visitorName" required placeholder="이름이나 닉네임을 적어주세요." class="w-full px-4 py-2 rounded-xl border border-cream-border bg-cream-bg focus:border-cream-point focus:outline-none text-xs transition-all">
+                                <input type="text" id="visitorName" name="name" required placeholder="이름이나 닉네임을 적어주세요." class="w-full px-4 py-2 rounded-xl border border-cream-border bg-cream-bg focus:border-cream-point focus:outline-none text-xs transition-all">
                             </div>
                             
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-[10px] font-bold text-cream-main mb-1.5 uppercase tracking-wide">인생 영화가 있다면?</label>
-                                    <input type="text" id="visitorMovie" placeholder="예: 인터스텔라" class="w-full px-4 py-2 rounded-xl border border-cream-border bg-cream-bg focus:border-cream-point focus:outline-none text-xs transition-all">
+                                    <input type="text" id="visitorMovie" name="movie" placeholder="예: 인터스텔라" class="w-full px-4 py-2 rounded-xl border border-cream-border bg-cream-bg focus:border-cream-point focus:outline-none text-xs transition-all">
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-bold text-cream-main mb-1.5 uppercase tracking-wide">인생 게임이 있다면?</label>
-                                    <input type="text" id="visitorGame" placeholder="예: 스타듀밸리" class="w-full px-4 py-2 rounded-xl border border-cream-border bg-cream-bg focus:border-cream-point focus:outline-none text-xs transition-all">
+                                    <input type="text" id="visitorGame" name="game" placeholder="예: 스타듀밸리" class="w-full px-4 py-2 rounded-xl border border-cream-border bg-cream-bg focus:border-cream-point focus:outline-none text-xs transition-all">
                                 </div>
                             </div>
 
                             <div>
                                 <label class="block text-[10px] font-bold text-cream-main mb-1.5 uppercase tracking-wide">남기고픈 이야기</label>
-                                <textarea id="visitorMessage" rows="3" required placeholder="조용하고 편안한 이야기를 나누어주세요." class="w-full px-4 py-2 rounded-xl border border-cream-border bg-cream-bg focus:border-cream-point focus:outline-none text-xs transition-all resize-none"></textarea>
+                                <textarea id="visitorMessage" name="message" rows="3" required placeholder="조용하고 편안한 이야기를 나누어주세요." class="w-full px-4 py-2 rounded-xl border border-cream-border bg-cream-bg focus:border-cream-point focus:outline-none text-xs transition-all resize-none"></textarea>
                             </div>
 
                             <button type="submit" class="w-full py-2.5 bg-cream-point hover:bg-cream-hover text-cream-card text-xs font-semibold rounded-xl transition-all duration-300 shadow-md flex items-center justify-center gap-2 active:scale-98">
@@ -571,7 +575,7 @@
             }
         }
 
-        /* 4. 로컬스토리지를 활용한 방명록(취향함) 기능 */
+        /* 4. 로컬스토리지를 활용한 방명록(취향함) 기능 + Netlify Forms 비동기 통합 */
         const tasteForm = document.getElementById('tasteForm');
         
         tasteForm.addEventListener('submit', (e) => {
@@ -582,6 +586,21 @@
             const game = document.getElementById('visitorGame').value.trim() || '없음';
             const message = document.getElementById('visitorMessage').value.trim();
 
+            // 1. AJAX를 통한 Netlify Forms 전송 처리 (배경 제출)
+            const formData = new FormData(tasteForm);
+            fetch("/", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams(formData).toString()
+            })
+            .then(() => {
+                console.log("Netlify Form submitted successfully!");
+            })
+            .catch((error) => {
+                console.error("Netlify Form submission error:", error);
+            });
+
+            // 2. 로컬 렌더링 유지 (UI 즉시 반영)
             const newTaste = {
                 id: Date.now(),
                 name,
