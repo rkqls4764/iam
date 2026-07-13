@@ -1,170 +1,551 @@
-<!-- NAVIGATION -->
-<header class="site-header">
-  <div class="nav-container">
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me - Quiet Archive</title>
+    <!-- Pretendard 폰트 로드 -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons (미니멀 아이콘 패키지) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Tone.js (음악 효과) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     
-    <!-- 로고 -->
-    <a href="index.html" class="logo">
-      <span class="logo-dot"></span>
-      Quiet Archive
-    </a>
+    <!-- Tailwind Custom Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: {
+                            bg: '#F8F6F2',      /* 아이보리 배경 */
+                            card: '#FFFCF7',    /* 크림 화이트 카드 */
+                            main: '#2E2E2E',    /* 메인 텍스트 */
+                            sub: '#6B6B6B',     /* 서브 텍스트 */
+                            point: '#7A8B5A',   /* 올리브 그린 포인트 */
+                            hover: '#5F6F47',   /* 포인트 호버 */
+                            border: '#E8E3DA'   /* 구분선 */
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(122, 139, 90, 0.05)',
+                        'soft-lg': '0 10px 30px -5px rgba(122, 139, 90, 0.08)'
+                    }
+                }
+            }
+        }
+    </script>
 
-    <!-- 데스크탑 메뉴 -->
-    <nav class="nav-menu" id="navMenu">
-      <a href="about.html" class="nav-link active">About Me</a>
-      <a href="movies-games.html" class="nav-link">영화&게임</a>
-      <a href="share.html" class="nav-link">취향 나누기</a>
-    </nav>
+    <style>
+        body {
+            font-family: 'Pretendard', sans-serif;
+            /* 세이지 그린 계열의 부드럽고 따뜻한 그라데이션 고정 배경 */
+            background: linear-gradient(135deg, #F8F6F2 0%, #EFF2EA 50%, #E2E8D9 100%);
+            background-attachment: fixed;
+            color: #2E2E2E;
+            overflow-x: hidden;
+        }
+        
+        /* 스크롤바 디자인 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F8F6F2;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #E8E3DA;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7A8B5A;
+        }
 
-    <!-- 모바일 햄버거 -->
-    <button class="menu-toggle" id="menuToggle" aria-label="메뉴 열기">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
+        /* 스크롤 인터랙션용 애니메이션 */
+        .fade-in-element {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-  </div>
-</header>
+        .fade-in-element.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="selection:bg-cream-point/20 selection:text-cream-point min-h-screen flex flex-col justify-between">
 
-<style>
-:root{
-  --bg:#F8F6F2;
-  --card:#FFFCF7;
-  --text:#2E2E2E;
-  --sub:#6B6B6B;
-  --point:#7A8B5A;
-  --border:#E8E3DA;
-}
+    <!-- NAVIGATION -->
+    <header class="site-header">
+      <div class="nav-container">
+        
+        <!-- 로고 -->
+        <a href="index.html" class="logo">
+          <span class="logo-dot"></span>
+          Quiet Archive
+        </a>
 
-.site-header{
-  position:sticky;
-  top:0;
-  z-index:1000;
-  backdrop-filter:blur(12px);
-  background:rgba(248,246,242,0.85);
-  border-bottom:1px solid var(--border);
-}
+        <!-- 데스크탑 메뉴 -->
+        <nav class="nav-menu" id="navMenu">
+          <a href="about.html" class="nav-link active">About Me</a>
+          <a href="artwork.html" class="nav-link">영화&게임</a>
+          <a href="share.html" class="nav-link">취향 나누기</a>
+        </nav>
 
-.nav-container{
-  max-width:1100px;
-  margin:0 auto;
-  height:70px;
-  padding:0 24px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
+        <!-- 모바일 햄버거 -->
+        <button class="menu-toggle" id="menuToggle" aria-label="메뉴 열기">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
 
-.logo{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  text-decoration:none;
-  color:var(--text);
-  font-weight:700;
-  font-size:1rem;
-}
+      </div>
+    </header>
 
-.logo-dot{
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  background:var(--point);
-}
+    <style>
+    :root{
+      --bg:#F8F6F2;
+      --card:#FFFCF7;
+      --text:#2E2E2E;
+      --sub:#6B6B6B;
+      --point:#7A8B5A;
+      --border:#E8E3DA;
+    }
 
-.nav-menu{
-  display:flex;
-  gap:32px;
-}
+    .site-header{
+      position:sticky;
+      top:0;
+      z-index:1000;
+      backdrop-filter:blur(12px);
+      background:rgba(248,246,242,0.85);
+      border-bottom:1px solid var(--border);
+    }
 
-.nav-link{
-  position:relative;
-  text-decoration:none;
-  color:var(--sub);
-  font-size:0.95rem;
-  font-weight:500;
-  transition:.25s;
-}
+    .nav-container{
+      max-width:1100px;
+      margin:0 auto;
+      height:70px;
+      padding:0 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
 
-.nav-link:hover{
-  color:var(--point);
-}
+    .logo{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      text-decoration:none;
+      color:var(--text);
+      font-weight:700;
+      font-size:1rem;
+    }
 
-/* 현재 페이지 */
-.nav-link.active{
-  color:var(--point);
-}
+    .logo-dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:var(--point);
+    }
 
-.nav-link.active::after{
-  content:"";
-  position:absolute;
-  left:0;
-  bottom:-8px;
-  width:100%;
-  height:2px;
-  background:var(--point);
-  border-radius:999px;
-}
+    .nav-menu{
+      display:flex;
+      gap:32px;
+    }
 
-/* 햄버거 버튼 */
-.menu-toggle{
-  display:none;
-  flex-direction:column;
-  gap:5px;
-  background:none;
-  border:none;
-  cursor:pointer;
-}
+    .nav-link{
+      position:relative;
+      text-decoration:none;
+      color:var(--sub);
+      font-size:0.95rem;
+      font-weight:500;
+      transition:.25s;
+    }
 
-.menu-toggle span{
-  width:24px;
-  height:2px;
-  background:var(--text);
-  transition:.3s;
-}
+    .nav-link:hover{
+      color:var(--point);
+    }
 
-/* 모바일 */
-@media (max-width:768px){
+    /* 현재 페이지 */
+    .nav-link.active{
+      color:var(--point);
+    }
 
-  .menu-toggle{
-    display:flex;
-  }
+    .nav-link.active::after{
+      content:"";
+      position:absolute;
+      left:0;
+      bottom:-8px;
+      width:100%;
+      height:2px;
+      background:var(--point);
+      border-radius:999px;
+    }
 
-  .nav-menu{
-    position:absolute;
-    top:70px;
-    left:0;
-    right:0;
-    background:var(--card);
-    border-bottom:1px solid var(--border);
+    /* 햄버거 버튼 */
+    .menu-toggle{
+      display:none;
+      flex-direction:column;
+      gap:5px;
+      background:none;
+      border:none;
+      cursor:pointer;
+    }
 
-    flex-direction:column;
-    gap:0;
+    .menu-toggle span{
+      width:24px;
+      height:2px;
+      background:var(--text);
+      transition:.3s;
+    }
 
-    max-height:0;
-    overflow:hidden;
-    transition:max-height .3s ease;
-  }
+    /* 모바일 */
+    @media (max-width:768px){
 
-  .nav-menu.open{
-    max-height:300px;
-  }
+      .menu-toggle{
+        display:flex;
+      }
 
-  .nav-link{
-    padding:18px 24px;
-    border-top:1px solid var(--border);
-  }
+      .nav-menu{
+        position:absolute;
+        top:70px;
+        left:0;
+        right:0;
+        background:var(--card);
+        border-bottom:1px solid var(--border);
 
-  .nav-link.active::after{
-    display:none;
-  }
-}
-</style>
+        flex-direction:column;
+        gap:0;
 
-<script>
-const menuToggle = document.getElementById("menuToggle");
-const navMenu = document.getElementById("navMenu");
+        max-height:0;
+        overflow:hidden;
+        transition:max-height .3s ease;
+      }
 
-menuToggle.addEventListener("click", () => {
-  navMenu.classList.toggle("open");
-});
-</script>
+      .nav-menu.open{
+        max-height:300px;
+      }
+
+      .nav-link{
+        padding:18px 24px;
+        border-top:1px solid var(--border);
+      }
+
+      .nav-link.active::after{
+        display:none;
+      }
+    }
+    </style>
+
+    <script>
+    const menuToggle = document.getElementById("menuToggle");
+    const navMenu = document.getElementById("navMenu");
+
+    menuToggle.addEventListener("click", () => {
+      navMenu.classList.toggle("open");
+    });
+    </script>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow">
+        
+        <!-- Header Hero Intro -->
+        <section class="max-w-4xl mx-auto px-6 pt-16 pb-8 text-center">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cream-card/60 border border-cream-border shadow-sm mb-4 fade-in-element">
+                <span class="w-2 h-2 rounded-full bg-cream-point"></span>
+                <span class="text-xs text-cream-sub font-medium tracking-wider uppercase">Quiet Explorer</span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-bold text-cream-main tracking-tight leading-tight fade-in-element" style="transition-delay: 100ms;">
+                바깥의 소음에서 한 걸음 물러나,<br>
+                나만의 아늑한 세계를 모으는 공간
+            </h1>
+        </section>
+
+        <!-- About Section (소개 섹션) -->
+        <section id="about" class="py-12 px-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+                    
+                    <div class="md:col-span-5 fade-in-element" style="transition-delay: 150ms;">
+                        <div class="relative bg-cream-card p-6 rounded-2xl border border-cream-border shadow-soft aspect-[4/5] flex flex-col justify-between overflow-hidden group">
+                            <div class="absolute -top-12 -right-12 w-40 h-40 bg-cream-point/10 rounded-full group-hover:scale-110 transition-transform duration-700"></div>
+                            
+                            <div class="flex justify-between items-start z-10">
+                                <span class="text-xs text-cream-point font-mono tracking-widest uppercase">My Profile</span>
+                                <i data-lucide="sparkles" class="w-5 h-5 text-cream-point"></i>
+                            </div>
+                            
+                            <div class="my-auto flex flex-col items-center text-center py-6">
+                                <div class="w-20 h-20 rounded-full bg-cream-bg border border-cream-border flex items-center justify-center mb-4 shadow-sm group-hover:rotate-12 transition-transform duration-500">
+                                    <i data-lucide="coffee" class="w-8 h-8 text-cream-point"></i>
+                                </div>
+                                <h3 class="text-xl font-semibold text-cream-main mb-1">김가빈</h3>
+                                <p class="text-xs text-cream-sub">ISFP · 조용한 탐험가</p>
+                            </div>
+
+                            <div class="border-t border-cream-border pt-4 z-10 flex justify-between text-xs text-cream-sub">
+                                <span>좋아하는 날씨: 비 오는 날</span>
+                                <span>상태: 이불 속 여행 중</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-7 space-y-6 fade-in-element" style="transition-delay: 200ms;">
+                        <div class="text-cream-point font-medium text-sm tracking-wider uppercase">About Me</div>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-cream-main leading-snug">
+                            조용히 나만의 세계를 단단하게 모아두고 있습니다.
+                        </h2>
+                        <p class="text-cream-sub leading-relaxed text-sm sm:text-base">
+                            안녕하세요! 저는 바깥의 소음에서 한 걸음 물러나 집 안의 아늑한 등불 아래에서 저만의 세계를 채워나가는 <strong>김가빈</strong>입니다. MBTI는 유연하면서도 온화한 감성을 지닌 집순이, <strong>ISFP</strong>입니다.
+                        </p>
+                        <p class="text-cream-sub leading-relaxed text-sm sm:text-base">
+                            침대나 소파에 편하게 파묻혀 영화를 보거나 게임 패드를 쥐는 시간은 저에게 단순한 킬링타임이 아닙니다. 가장 안전하고 아늑한 방 안에서 나아가는 무한한 모험이자 진정한 휴식입니다.
+                        </p>
+                        
+                        <div class="grid grid-cols-2 gap-4 pt-4">
+                            <div class="flex items-center gap-2.5 text-cream-main">
+                                <div class="w-6 h-6 rounded-full bg-cream-point/10 flex items-center justify-center shrink-0">
+                                    <i data-lucide="check" class="w-3.5 h-3.5 text-cream-point"></i>
+                                </div>
+                                <span class="text-xs sm:text-sm font-medium">따뜻한 내향인</span>
+                            </div>
+                            <div class="flex items-center gap-2.5 text-cream-main">
+                                <div class="w-6 h-6 rounded-full bg-cream-point/10 flex items-center justify-center shrink-0">
+                                    <i data-lucide="check" class="w-3.5 h-3.5 text-cream-point"></i>
+                                </div>
+                                <span class="text-xs sm:text-sm font-medium">SF & 우주 덕후</span>
+                            </div>
+                            <div class="flex items-center gap-2.5 text-cream-main">
+                                <div class="w-6 h-6 rounded-full bg-cream-point/10 flex items-center justify-center shrink-0">
+                                    <i data-lucide="check" class="w-3.5 h-3.5 text-cream-point"></i>
+                                </div>
+                                <span class="text-xs sm:text-sm font-medium">깊은 소통 선호</span>
+                            </div>
+                            <div class="flex items-center gap-2.5 text-cream-main">
+                                <div class="w-6 h-6 rounded-full bg-cream-point/10 flex items-center justify-center shrink-0">
+                                    <i data-lucide="check" class="w-3.5 h-3.5 text-cream-point"></i>
+                                </div>
+                                <span class="text-xs sm:text-sm font-medium">수집가적 성향</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Strengths Section (매력 포인트 섹션) -->
+        <section id="strengths" class="py-16 px-6 bg-transparent">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center max-w-xl mx-auto mb-16 fade-in-element">
+                    <span class="text-cream-point font-medium text-sm tracking-wider uppercase">My Strengths</span>
+                    <h2 class="text-3xl font-bold text-cream-main mt-2 mb-4">잔잔하게 반짝이는 나의 모습들</h2>
+                    <p class="text-cream-sub text-sm">요란하지는 않지만, 오랫동안 곁에 두고 볼수록 진한 여운을 남기는 저의 매력 포인트들입니다.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                    
+                    <!-- 01 지속력 -->
+                    <div class="bg-cream-card p-6 rounded-2xl border border-cream-border shadow-soft hover:shadow-soft-lg hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group fade-in-element">
+                        <div>
+                            <div class="w-10 h-10 rounded-xl bg-cream-point/10 text-cream-point flex items-center justify-center mb-6 group-hover:bg-cream-point group-hover:text-cream-card transition-colors">
+                                <i data-lucide="hourglass" class="w-5 h-5"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-cream-main mb-2">지속력</h3>
+                            <p class="text-cream-sub text-xs leading-relaxed">좋아하는 취미를 쉽게 바꾸지 않고 한결같이 깊이 있게 파고듭니다.</p>
+                        </div>
+                        <span class="text-cream-point font-mono text-xs font-bold pt-4">01 / STRENGTH</span>
+                    </div>
+
+                    <!-- 02 일관성 -->
+                    <div class="bg-cream-card p-6 rounded-2xl border border-cream-border shadow-soft hover:shadow-soft-lg hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group fade-in-element" style="transition-delay: 100ms;">
+                        <div>
+                            <div class="w-10 h-10 rounded-xl bg-cream-point/10 text-cream-point flex items-center justify-center mb-6 group-hover:bg-cream-point group-hover:text-cream-card transition-colors">
+                                <i data-lucide="compass" class="w-5 h-5"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-cream-main mb-2">일관성</h3>
+                            <p class="text-cream-sub text-xs leading-relaxed">조용하지만 흔들리지 않고 저만의 뚜렷한 취향의 세계를 지켜나갑니다.</p>
+                        </div>
+                        <span class="text-cream-point font-mono text-xs font-bold pt-4">02 / STRENGTH</span>
+                    </div>
+
+                    <!-- 03 깊은 몰입 -->
+                    <div class="bg-cream-card p-6 rounded-2xl border border-cream-border shadow-soft hover:shadow-soft-lg hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group fade-in-element" style="transition-delay: 200ms;">
+                        <div>
+                            <div class="w-10 h-10 rounded-xl bg-cream-point/10 text-cream-point flex items-center justify-center mb-6 group-hover:bg-cream-point group-hover:text-cream-card transition-colors">
+                                <i data-lucide="eye" class="w-5 h-5"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-cream-main mb-2">깊은 몰입</h3>
+                            <p class="text-cream-sub text-xs leading-relaxed">SF, 공포, 스릴러 등 치밀하고 몰입감 강한 콘텐츠에 극도로 집중합니다.</p>
+                        </div>
+                        <span class="text-cream-point font-mono text-xs font-bold pt-4">03 / STRENGTH</span>
+                    </div>
+
+                    <!-- 04 진정한 휴식 -->
+                    <div class="bg-cream-card p-6 rounded-2xl border border-cream-border shadow-soft hover:shadow-soft-lg hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group fade-in-element" style="transition-delay: 300ms;">
+                        <div>
+                            <div class="w-10 h-10 rounded-xl bg-cream-point/10 text-cream-point flex items-center justify-center mb-6 group-hover:bg-cream-point group-hover:text-cream-card transition-colors">
+                                <i data-lucide="coffee" class="w-5 h-5"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-cream-main mb-2">진정한 휴식</h3>
+                            <p class="text-cream-sub text-xs leading-relaxed">자신을 방전하지 않고, 조용하고 편안한 쉼을 설계하는 방법을 압니다.</p>
+                        </div>
+                        <span class="text-cream-point font-mono text-xs font-bold pt-4">04 / STRENGTH</span>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Floating Cozy Audio Player -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <button id="ambientBtn" class="flex items-center gap-2 text-xs bg-cream-card border border-cream-border hover:border-cream-point/50 text-cream-sub px-4 py-2.5 rounded-full transition-all shadow-md active:scale-95">
+            <span id="ambientWave" class="relative flex h-2 w-2 hidden">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cream-point opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-cream-point"></span>
+            </span>
+            <i data-lucide="music" class="w-3.5 h-3.5"></i>
+            <span id="ambientText">음악 켜기</span>
+        </button>
+    </div>
+
+    <!-- Toast Alert 알림창 -->
+    <div id="toastAlert" class="fixed bottom-6 left-6 z-50 bg-cream-card border border-cream-point text-cream-main px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-500 pointer-events-none">
+        <div class="w-6 h-6 rounded-full bg-cream-point/10 flex items-center justify-center text-cream-point">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+        </div>
+        <div class="text-xs">
+            <p id="toastMessage" class="font-bold">성공적으로 등록되었습니다!</p>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="py-12 px-6 border-t border-cream-border bg-cream-card/30">
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-cream-point"></span>
+                <span class="text-sm font-semibold text-cream-main tracking-tight">Quiet Archive</span>
+            </div>
+            
+            <p class="text-xs text-cream-sub text-center md:text-left leading-relaxed">
+                © 2026 Quiet Archive. All rights reserved.<br class="block sm:hidden">
+                누워서 가장 멀리 가는 취미에 함께해주셔서 고맙습니다.
+            </p>
+
+            <div class="flex gap-4">
+                <a href="#" class="w-8 h-8 rounded-full border border-cream-border hover:border-cream-point/50 flex items-center justify-center text-cream-sub hover:text-cream-point transition-colors">
+                    <i data-lucide="github" class="w-4 h-4"></i>
+                </a>
+                <a href="#" class="w-8 h-8 rounded-full border border-cream-border hover:border-cream-point/50 flex items-center justify-center text-cream-sub hover:text-cream-point transition-colors">
+                    <i data-lucide="arrow-up" class="w-4 h-4"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        /* 1. Lucide 아이콘 초기화 */
+        lucide.createIcons();
+
+        /* 2. 스크롤 페이드인 인터랙션 (Intersection Observer) */
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = document.querySelectorAll('.fade-in-element');
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            elements.forEach(el => observer.observe(el));
+        });
+
+        /* 3. Tone.js 기반 앰비언트 사운드 재생 */
+        let synth = null;
+        let ambientLoop = null;
+        let isPlaying = false;
+
+        const ambientBtn = document.getElementById('ambientBtn');
+        const ambientText = document.getElementById('ambientText');
+        const ambientWave = document.getElementById('ambientWave');
+
+        ambientBtn.addEventListener('click', async () => {
+            if (!isPlaying) {
+                try {
+                    await Tone.start();
+                    
+                    synth = new Tone.PolySynth(Tone.Synth, {
+                        oscillator: { type: 'sine' },
+                        envelope: { attack: 2, decay: 1, sustain: 1, release: 3 }
+                    }).toDestination();
+                    
+                    synth.volume.value = -18;
+
+                    const chords = [
+                        ["C4", "E4", "G4", "B4"],
+                        ["F4", "A4", "C5", "E5"],
+                        ["G4", "B4", "D5", "F#5"],
+                        ["E4", "G4", "B4", "D5"]
+                    ];
+                    
+                    let step = 0;
+                    ambientLoop = new Tone.Loop(time => {
+                        const chord = chords[step % chords.length];
+                        synth.triggerAttackRelease(chord, "4n", time);
+                        step++;
+                    }, "6n").start(0);
+
+                    Tone.Transport.start();
+                    
+                    isPlaying = true;
+                    ambientText.innerText = "음악 끄기";
+                    ambientWave.classList.remove('hidden');
+                    showToast("차분한 우주 앰비언트 음악이 시작되었습니다.");
+                } catch (e) {
+                    showToast("오디오 초기화 오류가 발생했습니다.");
+                }
+            } else {
+                Tone.Transport.stop();
+                if (ambientLoop) ambientLoop.cancel();
+                if (synth) synth.releaseAll();
+                isPlaying = false;
+                ambientText.innerText = "음악 켜기";
+                ambientWave.classList.add('hidden');
+                showToast("음악이 일시정지되었습니다.");
+            }
+        });
+
+        /* 4. 모던 토스트 팝업 제어 */
+        function showToast(msg) {
+            const toast = document.getElementById('toastAlert');
+            const toastMsg = document.getElementById('toastMessage');
+            
+            toastMsg.innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-20', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-20', 'pointer-events-none');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
