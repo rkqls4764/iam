@@ -90,11 +90,11 @@
           Quiet Archive
         </a>
 
-        <!-- 데스크탑 메뉴 -->
+        <!-- 데스크탑 메뉴 (영화&게임 활성화) -->
         <nav class="nav-menu" id="navMenu">
-          <a href="about.html" class="nav-link">About Me</a>
-          <a href="movies-games.html" class="nav-link">영화&게임</a>
-          <a href="share.html" class="nav-link active">취향 나누기</a>
+          <a href="index.html" class="nav-link">About Me</a>
+          <a href="artwork.html" class="nav-link active">영화&게임</a>
+          <a href="share.html" class="nav-link">취향 나누기</a>
         </nav>
 
         <!-- 모바일 햄버거 -->
@@ -403,6 +403,11 @@
                                 <label class="block text-[10px] font-bold text-cream-main mb-1.5 uppercase tracking-wide">남기고픈 이야기</label>
                                 <textarea id="visitorMessage" name="message" rows="3" required placeholder="조용하고 편안한 이야기를 나누어주세요." class="w-full px-4 py-2 rounded-xl border border-cream-border bg-cream-bg focus:border-cream-point focus:outline-none text-xs transition-all resize-none"></textarea>
                             </div>
+
+                            <!-- 안내 메시지 추가 -->
+                            <p class="text-[10px] text-cream-sub/80 text-center leading-relaxed">
+                                ✦ 남겨주신 소중한 취향 조각은 저에게 netlify로 전달되어 언제든 소중히 읽어봅니다.
+                            </p>
 
                             <button type="submit" class="w-full py-2.5 bg-cream-point hover:bg-cream-hover text-cream-card text-xs font-semibold rounded-xl transition-all duration-300 shadow-md flex items-center justify-center gap-2 active:scale-98">
                                 <i data-lucide="send" class="w-3.5 h-3.5"></i>
